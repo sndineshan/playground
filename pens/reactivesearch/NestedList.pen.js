@@ -3,33 +3,14 @@ const { ReactiveBase, NestedList, ReactiveList, AppbaseSensorHelper: helper } = 
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
-		this.onData = this.onData.bind(this);
 	}
 
 	componentDidMount() {
 		helper.ResponsiveStory();
 	}
 
-	onData(res) {
-		let result = null;
-		if (res) {
-			let combineData = res.currentData;
-			if (res.mode === "historic") {
-				combineData = res.currentData.concat(res.newData);
-			} else if (res.mode === "streaming") {
-				combineData = helper.combineStreamData(res.currentData, res.newData);
-			}
-			if (combineData) {
-				result = combineData.map((markerData) => {
-					const marker = markerData._source;
-					return this.itemMarkup(marker, markerData);
-				});
-			}
-		}
-		return result;
-	}
-
-	itemMarkup(marker, markerData) {
+	onData(markerData) {
+		const marker = markerData._source;
 		return (
 			<a
 				className="full_row single-record single_record_for_clone"
@@ -62,7 +43,7 @@ class Main extends React.Component {
 					<div className="col s6 col-xs-6">
 						<NestedList
 							componentId="CategorySensor"
-							appbaseField={[this.props.mapping.brand, this.props.mapping.model]}
+							appbaseField={["brand.raw", "model.raw"]}
 							title="NestedList"
 						/>
 					</div>
@@ -70,7 +51,7 @@ class Main extends React.Component {
 					<div className="col s6 col-xs-6">
 						<ReactiveList
 							componentId="SearchResult"
-							appbaseField={this.props.mapping.brand}
+							appbaseField="brand.raw"
 							title="Results"
 							from={0}
 							size={20}
@@ -85,20 +66,6 @@ class Main extends React.Component {
 		);
 	}
 }
-
-Main.defaultProps = {
-	mapping: {
-		brand: "brand.raw",
-		model: "model.raw"
-	}
-};
-
-Main.propTypes = {
-	mapping: React.PropTypes.shape({
-		brand: React.PropTypes.string,
-		model: React.PropTypes.string
-	})
-};
 
 ReactDOM.render(
 	<Main></Main>,

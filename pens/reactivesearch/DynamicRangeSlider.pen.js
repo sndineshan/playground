@@ -8,33 +8,14 @@ const {
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
-		this.onData = this.onData.bind(this);
 	}
 
 	componentDidMount() {
 		helper.ResponsiveStory();
 	}
 
-	onData(res) {
-		let result = null;
-		if (res) {
-			let combineData = res.currentData;
-			if (res.mode === "historic") {
-				combineData = res.currentData.concat(res.newData);
-			} else if (res.mode === "streaming") {
-				combineData = helper.combineStreamData(res.currentData, res.newData);
-			}
-			if (combineData) {
-				result = combineData.map((markerData) => {
-					const marker = markerData._source;
-					return this.itemMarkup(marker, markerData);
-				});
-			}
-		}
-		return result;
-	}
-
-	itemMarkup(marker, markerData) {
+	onData(markerData) {
+		const marker = markerData._source;
 		return (
 			<a
 				className="full_row single-record single_record_for_clone"
@@ -74,7 +55,7 @@ class Main extends React.Component {
 					<div className="col s6 col-xs-6">
 						<DynamicRangeSlider
 							componentId="RangeSensor"
-							appbaseField={this.props.mapping.guests}
+							appbaseField="guests"
 							stepValue={2}
 							title="DynamicRangeSlider"
 						/>
@@ -83,7 +64,7 @@ class Main extends React.Component {
 					<div className="col s6 col-xs-6">
 						<ReactiveList
 							componentId="SearchResult"
-							appbaseField={this.props.mapping.topic}
+							appbaseField="group.group_topics.topic_name_raw"
 							title="Results"
 							sortBy="asc"
 							from={0}
@@ -104,17 +85,3 @@ ReactDOM.render(
 	<Main></Main>,
 	document.getElementById("root")
 );
-
-DynamicRangeSliderDefault.defaultProps = {
-	mapping: {
-		guests: "guests",
-		topic: "group.group_topics.topic_name_raw"
-	}
-};
-
-DynamicRangeSliderDefault.propTypes = {
-	mapping: React.PropTypes.shape({
-		guests: React.PropTypes.string,
-		topic: React.PropTypes.string
-	})
-};
