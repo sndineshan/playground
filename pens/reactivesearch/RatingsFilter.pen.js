@@ -1,4 +1,9 @@
-const { ReactiveBase, RatingsFilter, ResultCard, AppbaseSensorHelper: helper } = ReactiveSearch;
+const { 
+	ReactiveBase,
+	RatingsFilter,
+	ResultCard,
+	AppbaseSensorHelper: helper
+} = ReactiveSearch;
 
 class Main extends React.Component {
 	constructor(props) {
@@ -39,6 +44,10 @@ class Main extends React.Component {
 								{ start: 2, end: 5, label: "2 stars and up" },
 								{ start: 1, end: 5, label: "> 1 stars" }]
 							}
+							defaultSelected={{
+								start: 3,
+								end: 5
+							}}
 						/>
 					</div>
 
